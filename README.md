@@ -13,8 +13,10 @@ You may also want to install `docker-compose` version that supports Docker Compo
 ### Quick Start 
 
 In the directory of this README run 
+```
 ./run.sh <branch name> <git repo url> <docker hub destination repo>
-
+```
+Usage example:
 ```
 ./run.sh dev https://github.com/rchain/rchain yourdestinationrepo/rnode:yourtagname
 ```
