@@ -48,5 +48,5 @@ for i in {0..3}; do
         rnode_cmd="rnode --bootstrap rnode://0f365f1016a54747b384b386b8e85352@10.1.1.2:30304 > /var/log/rnode.log 2>&1 &"
     fi
     branch_name="dev"
-    sudo docker exec ${container_name} bash -c "apt -y update; apt -y iputils-ping bridge-utils iproute2 install wget openssh-server; wget http://repo.pyr8.io:10002/rnode_${branch_name}_all.deb; apt -y install ./rnode_${branch_name}_all.deb; mkdir /var/lib/rnode; mkdir /root/.ssh; echo ${authorized_public_keys} >> /root/.ssh/authorized_keys; mkdir /var/run/sshd; service ssh start; apt remove --purge rnode; apt -y install rnode_0.2.1_all.deb; ${rnode_cmd}" 
+    sudo docker exec ${container_name} bash -c "apt -y update; apt -y iputils-ping bridge-utils iproute2 install wget openssh-server; wget http://repo.pyr8.io:10002/rnode_${branch_name}_all.deb; apt -y install ./rnode_${branch_name}_all.deb; mkdir /var/lib/rnode; mkdir /root/.ssh; echo ${authorized_public_keys} >> /root/.ssh/authorized_keys; mkdir /var/run/sshd; service ssh start; apt -y remove --purge rnode; apt -y install rnode_0.2.1_all.deb; ${rnode_cmd}" 
 done
