@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+# Puts a load on Rchain repl
+
+set force_conservative 1;
+
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+set timeout -1
+set prompt "*rholang $ "
+set cmd "5"
+set cmd_count 5 
+spawn sudo docker container rm -f rnode-repl
+spawn sudo docker run --rm -it --cpus=.5 --memory=1024m --name rnode-repl --network testnet1.rchain coop.rchain/rnode:latest --grpc-host node0.testnet1.rchain -r
+match_max 100000
+for {set i 0} {$i < $cmd_count} {incr i} {
+  expect $prompt
+  send -- "$cmd\r"
+  puts "Number $i sending $cmd"
+}
+expect $prompt
+send -- ":q\r"
+expect eof
+puts "complete"
