@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+import pexpect
+from pexpect import replwrap
+import subprocess
+import sys
+import time
+
+prompt="rholang $ "
+cmd = "sudo docker run --rm -it --cpus=.5 --memory=1024m --name rnode-repl --network testnet1.rchain coop.rchain/rnode:latest --grpc-host node0.testnet1.rchain -r"
+
+subprocess.run(["docker", "container", "rm", "-f", "rnode-repl"])
+
+
+py = replwrap.REPLWrapper(cmd, prompt, None)
+for i in range(10):
+  print(i)
+  a = py.run_command("5")
+  print(a)
+time.sleep(3)
+a = py.run_command(":q")
+print(a)
