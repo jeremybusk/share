@@ -65,3 +65,11 @@ apt-get install jflex -yqq
 
 ## Install packages for additional builds
 apt-get install autoconf libtool -yqq
+
+python3.6 -m pip install docker argparse pexpect requests
+git clone https://github.com/rchain/rchain
+cd rchain
+./scripts/install_secp.sh
+./scripts/install_sodium.sh
+./scripts/install.sh
+
