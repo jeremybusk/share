@@ -79,4 +79,4 @@ apt-get -yq install libsodium23
 
 apt-get -yq install rpm
 apt-get -yq install fakeroot
-apt-get -yq install libprotobuf-dev
+# apt-get -yq install libprotobuf-dev - not used yet nixos does this
