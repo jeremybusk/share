@@ -80,3 +80,24 @@ apt-get -yq install libsodium23
 apt-get -yq install rpm
 apt-get -yq install fakeroot
 # apt-get -yq install libprotobuf-dev - not used yet nixos does this
+
+# add rosette debian package
+rosette_install_dir=$(mktemp -d /tmp/rosette_stage.XXXXXXXX)
+cd ${rosette_install_dir}
+
+wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-cpp-3.5.1.tar.gz
+tar -xzf protobuf-cpp-3.5.1.tar.gz
+cd protobuf-3.5.1
+./configure --build=i686-pc-linux-gnu CFLAGS="-m32 -DNDEBUG" CXXFLAGS="-m32 -DNDEBUG" LDFLAGS=-m32
+make
+make check
+sudo make install
+sudo ldconfig # refresh shared library cache.
+cd ../
+git clone https://github.com/rchain/rchain
+cd rchain/rosette
+./build.sh
+apt -y install ./build.out/rosette-*.deb
+rm ${rosette_install_dir}
+
+
