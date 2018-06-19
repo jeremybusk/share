@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Prep "set" for CI if CI environment variable is set
 if [[ "${CI}" = "true" ]]; then
-    set -exo pipefail
+set -exo pipefail
 else
-    set -eo pipefail
+set -eo pipefail
 fi
 
 ### Install all dependencies on Ubuntu 16.04 LTS (Xenial Xerus) for RChain dev environment.
@@ -12,21 +12,21 @@ fi
 # Add more OS versions as necessary. 
 version=$(cat /etc/*release | grep "^VERSION_ID" | awk -F= '{print $2}' | sed 's/"//g')
 if [[ "$version" == "18.04" ]]; then
-    echo "Running install on Ubuntu 18.04" 
+echo "Running install on Ubuntu 18.04" 
 else
-    echo "Error: Not running on Ubuntu 18.04"
-    echo "Exiting"
-    exit
+echo "Error: Not running on Ubuntu 18.04"
+echo "Exiting"
+exit
 fi
 
 ## Install Docker-CE
 apt-get update -yqq
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add -
-add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu    xenial    stable"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 apt-get update -yqq
 apt install -y docker-ce sudo
-apt install -y python3 python3-pip 
+apt install -y python3 python3-pip
 
 ## Resynchronize the package index files from their sources
 apt-get update -yqq
@@ -35,7 +35,7 @@ apt-get install g++-multilib -yqq
 ## Install misc tools 
 apt-get install cmake curl git -yqq
 ## Install Java OpenJDK 8
-#  apt-get install default-jdk -yqq # alternate jdk install 
+# apt-get install default-jdk -yqq # alternate jdk install 
 apt-get install openjdk-8-jdk -yqq
 
 ## Python 3.6 Install
@@ -56,7 +56,7 @@ apt-get install haskell-platform -yqq
 
 ## Install SBT 
 apt-get install apt-transport-https -yqq
-echo "deb https://dl.bintray.com/sbt/debian /" |  tee -a /etc/apt/sources.list.d/sbt.list
+echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 apt-get update -yqq
 apt-get install sbt -yqq
@@ -74,7 +74,6 @@ cd rchain
 apt-get -yq install libsecp256k1-0
 #./scripts/install_sodium.sh
 apt-get -yq install libsodium23
-./scripts/install_bnfc.sh
 # apt-get -yq install bnfc # 2.8.1 is last release and doesn't have Kyle's changes
 
 apt-get -yq install rpm
@@ -93,11 +92,25 @@ make
 make check
 sudo make install
 sudo ldconfig # refresh shared library cache.
-cd ../
+
+rchain_install_dir=$(mktemp -d /tmp/rchain_stage.XXXXXXXX)
+cd ${rchain_install_dir}
+# get the src code
 git clone https://github.com/rchain/rchain
+
+# compile rosette if wanted 
 cd rchain/rosette
 ./build.sh
 apt -y install ./build.out/rosette-*.deb
-rm ${rosette_install_dir}
+cd ..
+./scripts/install_bnfc.sh
 
 
+# create packages
+sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/rpm:packageBin node/debian:packageBin node/universal:packageZipTarball
+
+# create docker image - requires running and accessible docker
+sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/docker:publishLocal
+
+/bin/rm -rf ${rosette_install_dir}
+/bin/rm -rf ${rchain_install_dir}
