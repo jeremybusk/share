@@ -132,7 +132,7 @@ echo "docker images | grep rnode"
 echo "doocker tag and then docker push"
 echo "=========================================================="
 echo "Building artifacts from rchain build dir after making changes"
-echo "To go to rchain build directory and make some modifications and produce new artifacts
+echo "To go to rchain build directory and make some modifications and produce new artifacts"
 echo "cd ${rchain_build_dir}/rchain"
 echo "make your changes"
 echo "sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/docker:publishLocal"
