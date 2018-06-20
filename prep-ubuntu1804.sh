@@ -31,7 +31,7 @@ apt-get install -y apt-transport-https ca-certificates curl software-properties-
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 apt-get update -yqq
-apt install -y docker-ce sudo
+apt install -y docker-ce sudo wget curl
 apt install -y python3 python3-pip
 
 ## Resynchronize the package index files from their sources
@@ -122,16 +122,22 @@ cp node/target/rnode_*_all.deb ${artifacts_dir}/rnode.deb
 cp node/target/rpm/RPMS/noarch/rnode-*.noarch.rpm ${artifacts_dir}/rnode.rpm
 cp rosette/build.out/rosette-*.deb ${artifacts_dir}/rosette.deb
 
-
-echo "To go to rchain build directory and make some modifications.
-echo "cd ${rchain_build_dir}/rchain"
 echo "=========================================================="
 echo "To collect built artifacts and copy somewhere"
 echo "cd ${artifacts_dir}"
+echo "scp somewhere"
 echo "=========================================================="
 echo "Or push docker by finding image"
 echo "docker images | grep rnode"
 echo "doocker tag and then docker push"
+echo "=========================================================="
+echo "Building artifacts from rchain build dir after making changes"
+echo "To go to rchain build directory and make some modifications and produce new artifacts
+echo "cd ${rchain_build_dir}/rchain"
+echo "make your changes"
+echo "sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/docker:publishLocal"
+echo "sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/rpm:packageBin node/debian:packageBin node/universal:packageZipTarbal"
+echo "=========================================================="
 
 ## Clean Up
 /bin/rm -rf ${protobuf_build_dir} # remove this as we don't need it anymore
