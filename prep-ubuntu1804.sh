@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# Simple prep scripts for rchain. Use Docker, LXD or some other container software to start up Ubuntu 18.04 host
+#
+# Get started by running a container that has access to your host docker.sock so we can do "nested docker"
+# sudo docker run -dit -v /var/run/docker.sock:/var/run/docker.sock --name rchaindevhost ubuntu:bionic
+# sudo docker exec -it rchaindevhost /bin/bash
+
 # Prep "set" for CI if CI environment variable is set
 if [[ "${CI}" = "true" ]]; then
 set -exo pipefail
@@ -67,9 +73,6 @@ apt-get install jflex -yqq
 ## Install packages for additional builds
 apt-get install autoconf libtool -yqq
 
-python3.6 -m pip install docker argparse pexpect requests
-git clone https://github.com/rchain/rchain
-cd rchain
 #./scripts/install_secp.sh
 apt-get -yq install libsecp256k1-0
 #./scripts/install_sodium.sh
@@ -81,8 +84,8 @@ apt-get -yq install fakeroot
 # apt-get -yq install libprotobuf-dev - not used yet nixos does this
 
 # add rosette debian package
-rosette_install_dir=$(mktemp -d /tmp/rosette_stage.XXXXXXXX)
-cd ${rosette_install_dir}
+protobuf_build_dir=$(mktemp -d /tmp/protobuf_build.XXXXXXXX)
+cd ${protobuf_build_dir}
 
 wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-cpp-3.5.1.tar.gz
 tar -xzf protobuf-cpp-3.5.1.tar.gz
@@ -93,8 +96,8 @@ make check
 sudo make install
 sudo ldconfig # refresh shared library cache.
 
-rchain_install_dir=$(mktemp -d /tmp/rchain_stage.XXXXXXXX)
-cd ${rchain_install_dir}
+rchain_build_dir=$(mktemp -d /tmp/rchain_build.XXXXXXXX)
+cd ${rchain_build_dir}
 # get the src code
 git clone https://github.com/rchain/rchain
 
@@ -102,15 +105,35 @@ git clone https://github.com/rchain/rchain
 cd rchain/rosette
 ./build.sh
 apt -y install ./build.out/rosette-*.deb
+
+python3.6 -m pip install docker argparse pexpect requests
+
 cd ..
 ./scripts/install_bnfc.sh
 
-
-# create packages
-sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/rpm:packageBin node/debian:packageBin node/universal:packageZipTarball
-
-# create docker image - requires running and accessible docker
+# Create docker image - requires running and accessible docker
 sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/docker:publishLocal
 
-/bin/rm -rf ${rosette_install_dir}
-/bin/rm -rf ${rchain_install_dir}
+# Create packages
+sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/rpm:packageBin node/debian:packageBin node/universal:packageZipTarball
+
+artifacts_dir=$(mktemp -d /tmp/artifacts_out.XXXXXXXX)
+cp node/target/rnode_*_all.deb ${artifacts_dir}/rnode.deb
+cp node/target/rpm/RPMS/noarch/rnode-*.noarch.rpm ${artifacts_dir}/rnode.rpm
+cp rosette/build.out/rosette-*.deb ${artifacts_dir}/rosette.deb
+
+
+echo "To go to rchain build directory and make some modifications.
+echo "cd ${rchain_build_dir}/rchain"
+echo "=========================================================="
+echo "To collect built artifacts and copy somewhere"
+echo "cd ${artifacts_dir}"
+echo "=========================================================="
+echo "Or push docker by finding image"
+echo "docker images | grep rnode"
+echo "doocker tag and then docker push"
+
+## Clean Up
+/bin/rm -rf ${protobuf_build_dir} # remove this as we don't need it anymore
+# /bin/rm -rf ${rchain_build_dir} # uncomment if you want to delete rchain build directory
+# /bin/rm -rf ${artifacts_dir} # uncomment if you want to delete artifacts store directory
