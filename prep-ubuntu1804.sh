@@ -96,9 +96,11 @@ cd rchain/rosette
 ./build.sh
 apt -y install ./build.out/rosette-*.deb
 
+# Adding some useful python libraries if you want to take advantage of integration test tool
 python3.6 -m pip install docker argparse pexpect requests
-
 cd ..
+
+# install bnfc
 ./scripts/install_bnfc.sh
 
 # Create docker image - requires running and accessible docker
