@@ -45,17 +45,6 @@ apt-get install cmake curl git -yqq
 # apt-get install default-jdk -yqq # alternate jdk install 
 apt-get install openjdk-8-jdk -yqq
 
-## Python 3.6 Install
-# python_version='3.6.5'
-# apt-get -y update
-# apt-get -y upgrade
-# apt-get -y install libssl-dev zlib1g-dev gcc make libopal-dev 
-# wget https://www.python.org/ftp/python/$python_version/Python-$python_version.tgz
-# tar xzf Python-$python_version.tgz
-# cd Python-$python_version
-# ./configure --prefix=/usr/local
-# make altinstall
-
 ## Install Haskell Platform for bnfc
 # ref: https://www.haskell.org/platform/#linux-ubuntu
 # ref: https://www.haskell.org/platform/ # all platforms
