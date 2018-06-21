@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Simple prep scripts for rchain. Use Docker, LXD or some other container software to start up Ubuntu 18.04 host
 #
-# Get started by running a container that has access to your host docker.sock so we can do "nested docker"
+# Get started by running a container that has access to your host docker.sock so we can public docker image in "nested docker"
 # sudo docker run -dit -v /var/run/docker.sock:/var/run/docker.sock --name rchaindevhost ubuntu:bionic
 # sudo docker exec -it rchaindevhost /bin/bash
 # Go have a nap or dinner as this will take a while, maybe even an hour or so depending on you machine.
