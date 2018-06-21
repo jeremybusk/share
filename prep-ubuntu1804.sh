@@ -4,6 +4,7 @@
 # Get started by running a container that has access to your host docker.sock so we can do "nested docker"
 # sudo docker run -dit -v /var/run/docker.sock:/var/run/docker.sock --name rchaindevhost ubuntu:bionic
 # sudo docker exec -it rchaindevhost /bin/bash
+# Go have a nap or dinner as this will take a while, maybe even an hour or so depending on you machine.
 
 # Prep "set" for CI if CI environment variable is set
 if [[ "${CI}" = "true" ]]; then
