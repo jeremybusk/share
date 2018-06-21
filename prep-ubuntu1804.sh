@@ -138,8 +138,8 @@ echo "make your changes"
 echo "sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/docker:publishLocal"
 echo "sudo sbt -Dsbt.log.noformat=true clean rholang/bnfc:generate node/rpm:packageBin node/debian:packageBin node/universal:packageZipTarbal"
 echo "=========================================================="
-
 ## Clean Up
-/bin/rm -rf ${protobuf_build_dir} # remove this as we don't need it anymore
-# /bin/rm -rf ${rchain_build_dir} # uncomment if you want to delete rchain build directory
-# /bin/rm -rf ${artifacts_dir} # uncomment if you want to delete artifacts store directory
+echo "If you want, you can remove all files from /tmp after you get or do what you want"
+echo "/bin/rm -rf ${protobuf_build_dir}"
+echo "/bin/rm -rf ${rchain_build_dir}"
+echo "/bin/rm -rf ${artifacts_dir}"
