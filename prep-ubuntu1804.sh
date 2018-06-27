@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Simple prep scripts for rchain. Use Docker, LXD or some other container software to start up Ubuntu 18.04 host
-#
-# Get started by running a container that has access to your host docker.sock so we can public docker image in "nested docker"
+### Install all dependencies on Ubuntu 18.04 LTS (Bionic Beaver) for RChain dev environment.
+# Simple prep script for Rchain development enviroment on Ubuntu 18.04/Bionic
+# Use Docker, LXD or some other container software to start-up Ubuntu 18.04 container 
+
+## Get started by running a container that has access to your host docker.sock so we can public docker image in "nested docker"
 # sudo docker run -dit -v /var/run/docker.sock:/var/run/docker.sock --name rchaindevhost ubuntu:bionic
 # sudo docker exec -it rchaindevhost /bin/bash
 # Go have a nap or dinner as this will take a while, maybe even an hour or so depending on you machine.
@@ -13,7 +15,6 @@ else
 set -eo pipefail
 fi
 
-### Install all dependencies on Ubuntu 16.04 LTS (Xenial Xerus) for RChain dev environment.
 
 ## Verify operating system (OS) version is Ubuntu 16.04 LTS (Xenial Xerus)
 # Add more OS versions as necessary. 
@@ -42,7 +43,6 @@ apt-get install g++-multilib -yqq
 ## Install misc tools 
 apt-get install cmake curl git -yqq
 ## Install Java OpenJDK 8
-# apt-get install default-jdk -yqq # alternate jdk install 
 apt-get install openjdk-8-jdk -yqq
 
 ## Install Haskell Platform for bnfc
@@ -71,12 +71,12 @@ apt-get -yq install libsodium23
 
 apt-get -yq install rpm
 apt-get -yq install fakeroot
-# apt-get -yq install libprotobuf-dev - not used yet nixos does this
 
-# add rosette debian package
+# Add rosette debian package
 protobuf_build_dir=$(mktemp -d /tmp/protobuf_build.XXXXXXXX)
 cd ${protobuf_build_dir}
 
+# Install latest 32bit protobuf. This takes a long time.
 wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-cpp-3.5.1.tar.gz
 tar -xzf protobuf-cpp-3.5.1.tar.gz
 cd protobuf-3.5.1
@@ -86,21 +86,22 @@ make check
 sudo make install
 sudo ldconfig # refresh shared library cache.
 
+
+# Get RChain src code
 rchain_build_dir=$(mktemp -d /tmp/rchain_build.XXXXXXXX)
 cd ${rchain_build_dir}
-# get the src code
 git clone https://github.com/rchain/rchain
 
-# compile rosette if wanted 
+# Compile rosette if wanted 
 cd rchain/rosette
 ./build.sh
 apt -y install ./build.out/rosette-*.deb
 
-# Adding some useful python libraries if you want to take advantage of integration test tool
+# Add some useful python libraries if you want to take advantage of integration test tool
 python3.6 -m pip install docker argparse pexpect requests
 cd ..
 
-# install bnfc
+# Install BNFC 
 ./scripts/install_bnfc.sh
 
 # Create docker image - requires running and accessible docker
@@ -121,7 +122,7 @@ echo "scp somewhere"
 echo "=========================================================="
 echo "Or push docker by finding image"
 echo "docker images | grep rnode"
-echo "doocker tag and then docker push"
+echo "docker tag and then docker push"
 echo "=========================================================="
 echo "Building artifacts from rchain build dir after making changes"
 echo "To go to rchain build directory and make some modifications and produce new artifacts"
