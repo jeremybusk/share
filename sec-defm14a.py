@@ -15,7 +15,7 @@ def get_forms():
     downloads_dir = 'downloads'
     if not os.path.exists(downloads_dir):
         os.makedirs(downloads_dir)
-    pages = range(3)
+    pages = range(55)
     for page in pages:
         print(page)
         filename = f'{page}.html'
