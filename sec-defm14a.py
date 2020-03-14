@@ -39,7 +39,7 @@ def get_forms():
             filename = f"{downloads_dir}/{filename}"
             count += 1
             print(f"{count} url: {url} filename: {filename}")
-            # curl(url, filename)
+            curl(url, filename)
 
 
 def curl(url, filename):
