@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pip3 install requests bs4
 import subprocess
 from bs4 import BeautifulSoup as bs
 import requests
