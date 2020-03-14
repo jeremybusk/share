@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import subprocess
 from bs4 import BeautifulSoup as bs
-import requests
+# import requests
 import re
-import sys
-import time
 import os
 
 
