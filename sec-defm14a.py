@@ -26,13 +26,9 @@ def get_forms():
 
     count = 0
     for a in soup.findAll('a'):
-        # print(vars(a))
         href = a.get('href')
         # Document/Search/?formType=FormDEFM14A
         # /Document/Header/?formType=DEFM14A
-        # url = "https://sec.report//Document/0001193125-20-071574/"
-        # if 'Document' in href and 'DEFM14A' not in href and 'https://sec.report/Document/' not in href:
-        # if 'Document' in href and 'DEFM14A' not in href and 'https://sec.report/Document/' not in href:
         if 'Document' in href and 'DEFM14A' not in href and 'sec.report' not in href:
             url = f"https://sec.report/{href}"
             filename = url.split('/')[-2] + '.html'
@@ -44,6 +40,7 @@ def get_forms():
 
 def curl(url, filename):
     cmd = f"curl {url} > {filename}"
+    # cmd = shlex.split(cmd)
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     print(stdout)
@@ -51,13 +48,3 @@ def curl(url, filename):
 
 if __name__ == "__main__":
     main()
-
-
-
-# TRASH
-#
-        # wlist = ["Document", "DEFM14A", "sec.report"]
-    # args = shlex.split(cmd)
-#             # r = requests.get(url)
-#             # save_file = "fff.html"
-#             # open(save_file, 'wb').write(r.content)
