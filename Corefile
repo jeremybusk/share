@@ -10,6 +10,7 @@
     10.0.0.1 host1.example.org
     10.0.0.2 host2..example.org
     10.0.0.3 host3.test.org
+    10.0.0.4 host3.test.org
     reload 0
     fallthrough
   }
