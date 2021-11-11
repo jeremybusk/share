@@ -1,5 +1,5 @@
 https://github.com/jeremybusk/zabbix-resources/tree/master/alertscripts
 
-enovy
+envoy
 
 ingress nginx for http proxy
